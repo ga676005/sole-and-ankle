@@ -47,22 +47,25 @@ const ShoeCard = ({
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
+        {variantStyle && (
+          <ShoeStatus style={{ '--bg-clr': variantStyle.bg }}>
+            {variantStyle.text}
+          </ShoeStatus>
+        )}
         <ImageWrapper>
           <Image alt='' src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price className={variant === 'on-sale' ? 'on-sale' : ''}>
+            {formatPrice(price)}
+          </Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {salePrice && <SalePrice> {formatPrice(salePrice)} </SalePrice>}
         </Row>
-        {variantStyle && (
-          <SalePrice style={{ '--bg-clr': variantStyle.bg }} variant={variant}>
-            {variantStyle.text}
-          </SalePrice>
-        )}
       </Wrapper>
     </Link>
   )
@@ -92,6 +95,7 @@ const Image = styled.img`
 const Row = styled.div`
   font-size: 1rem;
   display: flex;
+  justify-content: space-between;
 `
 
 const Name = styled.h3`
@@ -100,13 +104,23 @@ const Name = styled.h3`
   margin-right: auto;
 `
 
-const Price = styled.span``
+const Price = styled.span`
+  &.on-sale {
+    color: ${COLORS.gray[700]};
+    text-decoration: line-through;
+  }
+`
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
 `
 
 const SalePrice = styled.span`
+  font-weight: ${WEIGHTS.medium};
+  color: ${COLORS.primary};
+`
+
+const ShoeStatus = styled.span`
   font-weight: ${WEIGHTS.medium};
   font-size: 14px;
   color: ${COLORS.white};
